@@ -3,28 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prodcutos</title>
+    <title>Productos</title>
 </head>
 <body>
-    <h1>Gestiòn de productos</h1>
-    <form action="insert">
-        <input type="text" id="nombre" placeholder="Ingrese el nombre del producto">
-        <input type="text" id="nombre" placeholder="Ingrese el precio del producto">
-        <input type="text" id="nombre" placeholder="Ingrese el codigo del producto">
-        <button type="submit">Agregar producto </button>
+    <h1>Gestión de productos</h1>
+    <form id="product-form">
+        <input type="text" id="nombre" placeholder="Ingrese el nombre del producto" required>
+        <input type="text" id="precio" placeholder="Ingrese el precio del producto" required>
+        <input type="text" id="codigo" placeholder="Ingrese el código del producto" required>
+        <button type="submit">Agregar producto</button>
     </form>
 
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import {getFirestore,collection,addDoc,onSnapshot,deleteDoc,doc}
-        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
       
         // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
           apiKey: "AIzaSyCRdmsLGtJ51YKhucNqJ9U9D5n4HadUlkc",
           authDomain: "proyecto-659ec.firebaseapp.com",
@@ -38,6 +34,31 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-      </script>
+        const db = getFirestore(app);
+
+        // Handle form submission
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nombre = document.getElementById('nombre').value;
+            const precio = document.getElementById('precio').value;
+            const codigo = document.getElementById('codigo').value;
+
+            try {
+                const docRef = await addDoc(collection(db, "productos"), {
+                    nombre: nombre,
+                    precio: precio,
+                    codigo: codigo
+                });
+                alert('Producto agregado con ID: ' + docRef.id);
+            } catch (e) {
+                console.error('Error al agregar el producto: ', e);
+                alert('Error al agregar el producto');
+            }
+
+            // Optionally, clear the form
+            document.getElementById('product-form').reset();
+        });
+    </script>
 </body>
 </html>
